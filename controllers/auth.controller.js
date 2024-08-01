@@ -7,7 +7,7 @@ const validator = require("validator");
 const signup = async (req, res) => {
   try {
     let { email, password } = req.body;
-    if (!email.trim()) return res.status(400).json({ status: false, message: "Please provide email!" });
+    if (!email?.trim()) return res.status(400).json({ status: false, message: "Please provide email!" });
     if (!password) return res.status(400).json({ status: false, message: "Please provide password!" });
 
     if (!validator.isEmail(email)) return res.status(400).json({ status: false, message: "User entered invalid email!!" });
@@ -29,15 +29,14 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   try {
     let { email, password } = req.body;
-    if (!email.trim()) return res.status(400).json({ status: false, message: "Please provide email!" });
+    if (!email?.trim()) return res.status(400).json({ status: false, message: "Please provide email!" });
     if (!password) return res.status(400).json({ status: false, message: "Please provide password!" });
 
     const check_user = await User.findOne({ email });
     if (!check_user) return res.status(400).json({ status: false, message: "Invalid email!" });
 
     const hashed_pass = crypto.HmacSHA512(password, JWTKEY);
-
-    if (hashed_pass.toString() !== check_user.password) return res.status(400).json({ status: false, message: "Please enter correct password!" });
+    if (hashed_pass != check_user.password) return res.status(400).json({ status: false, message: "Please enter correct password!" });
     // Create token
     const token = jwt.sign(
       {

@@ -3,18 +3,17 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-
+require("dotenv").config();
+var cors = require("cors");
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const adminRouter = require('./routes/admin');
 
 const { connect_db } = require('./configs/db');
-require("dotenv").config();
-const cors = require("cors");
 const app = express();
+
 connect_db()
 app.use(cors());
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
