@@ -5,12 +5,12 @@ const add_new_product = async (req, res) => {
     const { title, description, price } = req.body;
     if (!title) return res.status(400).json({ status: false, message: "Please add title of the product!" });
     if (!description) return res.status(400).json({ status: false, message: "Please add description of the product!" });
-    if (!price) return res.status(400).json({ status: false, message: "Please add price of the product!" });
+    if (!price || isNaN(price) || price < 0) return res.status(400).json({ status: false, message: "Product price missing!" });
 
     let image;
     if (req.file) image = req.file.filename;
 
-    const product_data = { title, description, price, image };
+    const product_data = { title, description, price: parseFloat(price.toFixed(2)), image };
     const add_product = await Product.create(product_data);
     if (!add_product) return res.status(400).json({ status: false, message: "Unable to add product. Please try again later!" });
     return res.status(200).json({ status: true, data: add_product, message: "Product added successfully" });

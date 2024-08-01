@@ -26,6 +26,7 @@ module.exports = {
         
         //FOR USER VERIFICATION
         req.user = user;
+        req.user_id = user_id;
         req.role = user.role;
       }
 
