@@ -1,3 +1,4 @@
+const { isValidObjectId } = require("mongoose");
 const Product = require("../models/product.model");
 
 const add_new_product = async (req, res) => {
@@ -31,7 +32,41 @@ const get_products = async (req, res) => {
   }
 };
 
+
+const get_one_product = async (req, res) => {
+  try {
+    const {id} = req.params;
+    if (!id) return res.status(400).json({ status: false, message: "Please add ID of the product!" });
+    if (!isValidObjectId(id)) return res.status(400).json({ status: false, message: "Please add valid ID of the product!" });
+
+    const get_product = await Product.findById(id);
+    if (!get_product) return res.status(400).json({ status: false, message: "Unable to fetch product. Please try again later!" });
+    return res.status(200).json({ status: true, data: get_product, message: "Product fetch successfully" });
+  } catch (error) {
+    console.log("error===>", error);
+    return res.status(400).json({ status: false, message: "Something went wrong!" });
+  }
+}
+
+const delete_one_product = async (req, res) => {
+  try {
+    const {id} = req.params;
+    if (!id) return res.status(400).json({ status: false, message: "Please add ID of the product!" });
+    if (!isValidObjectId(id)) return res.status(400).json({ status: false, message: "Please add valid ID of the product!" });
+
+    const get_product = await Product.findByIdAndDelete(id);
+    if (!get_product) return res.status(400).json({ status: false, message: "Unable to delete product. Please try again later!" });
+    return res.status(200).json({ status: true, message: "Product delete successfully" });
+  } catch (error) {
+    console.log("error===>", error);
+    return res.status(400).json({ status: false, message: "Something went wrong!" });
+  }
+}
+
+
 module.exports = {
   add_new_product,
   get_products,
+  get_one_product,
+  delete_one_product
 };
