@@ -32,6 +32,7 @@ module.exports = {
       }
 
       req.tokenData = decoded_token;
+      console.log(decoded_token);
       return next();
     } catch (err) {
       console.log("err============", err);
