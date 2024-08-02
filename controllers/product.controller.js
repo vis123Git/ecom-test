@@ -48,6 +48,32 @@ const get_one_product = async (req, res) => {
   }
 }
 
+
+const update_one_product = async (req, res) => {
+  try {
+    const {id} = req.params;
+    if (!id) return res.status(400).json({ status: false, message: "Please add ID of the product!" });
+    if (!isValidObjectId(id)) return res.status(400).json({ status: false, message: "Please add valid ID of the product!" });
+
+    const get_product = await Product.findById(id);
+    if (!get_product) return res.status(400).json({ status: false, message: "Unable to fetch product. Please try again later!" });
+
+    const { title, description, price } = req.body;
+    const data_to_update = {}
+    if (title) data_to_update.title = title;
+    if (description) data_to_update.description = description;
+    if (price) data_to_update.price = price;
+    if (req.file) data_to_update.image = req.file.filename;
+
+    const update_product = await Product.findByIdAndUpdate(id, {$set : data_to_update}, {new:true})
+    if (!update_product) return res.status(400).json({ status: false, message: "Unable to update product. Please try again later!" });
+
+    return res.status(200).json({ status: true, data: update_product, message: "Product updated successfully" });
+  } catch (error) {
+    console.log("error===>", error);
+    return res.status(400).json({ status: false, message: "Something went wrong!" });
+  }
+}
 const delete_one_product = async (req, res) => {
   try {
     const {id} = req.params;
@@ -68,5 +94,6 @@ module.exports = {
   add_new_product,
   get_products,
   get_one_product,
-  delete_one_product
+  delete_one_product,
+  update_one_product
 };
