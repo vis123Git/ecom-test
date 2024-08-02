@@ -11,7 +11,7 @@ const add_new_product = async (req, res) => {
     let image;
     if (req.file) image = req.file.filename;
 
-    const product_data = { title, description, price: parseFloat(price.toFixed(2)), image };
+    const product_data = { title, description, price: Number(price), image };
     const add_product = await Product.create(product_data);
     if (!add_product) return res.status(400).json({ status: false, message: "Unable to add product. Please try again later!" });
     return res.status(200).json({ status: true, data: add_product, message: "Product added successfully" });
