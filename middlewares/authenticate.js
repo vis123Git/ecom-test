@@ -1,5 +1,6 @@
 const { verify } = require("jsonwebtoken");
 const User = require("../models/user.model");
+const {JWTKEY} = process.env
 
 module.exports = {
   AuthenticateApi: async (req, res, next) => {
@@ -26,7 +27,7 @@ module.exports = {
         
         //FOR USER VERIFICATION
         req.user = user;
-        req.user_id = user_id;
+        req.user_id = decoded_token.user_id;
         req.role = user.role;
       }
 
@@ -41,7 +42,7 @@ module.exports = {
 
   AuthenticateAdminApi: async (req, res, next) => {
     try {
-      if (req.admin.role !== "superadmin") {
+      if (req.role !== "superadmin") {
         return res.status(401).json({
           status: false,
           message: "You are not authorized to perform this operation",
